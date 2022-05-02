@@ -7,10 +7,8 @@ import 'package:news_app/components/news_title.dart';
 import 'package:news_app/components/category_title.dart';
 import 'package:news_app/components/custom_app_bar.dart';
 import 'package:news_app/helper/blogs.dart';
-import 'package:news_app/helper/data.dart';
 import 'package:news_app/helper/news.dart';
 import 'package:news_app/models/article_model.dart';
-import 'package:news_app/models/category_model.dart';
 import 'package:news_app/models/myblog_model.dart';
 import 'package:news_app/views/category_news.dart';
 
@@ -20,8 +18,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<CategoryModel> categories =
-      new List<CategoryModel>.empty(growable: true);
+
   List<ArticleModel> articles = new List<ArticleModel>.empty(growable: true);
   List<MyBlogModel> blogs = new List<MyBlogModel>.empty(growable: true);
   bool _loading = true;
@@ -29,7 +26,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    categories = getCategories();
     getDatas();
   }
 

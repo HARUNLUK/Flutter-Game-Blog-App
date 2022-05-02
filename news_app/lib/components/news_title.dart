@@ -30,6 +30,7 @@ class NewsTitle extends StatelessWidget {
                     child: Image.network(
                       imageUrl!,
                       width: 120,
+                      height:70,
                     ),
                   ),
                 ),
