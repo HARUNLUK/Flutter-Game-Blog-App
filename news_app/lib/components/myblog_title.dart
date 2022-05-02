@@ -28,6 +28,9 @@ class MyBlogTitle extends StatelessWidget {
                   children: <Widget>[
                     Image.network(
                       imageUrl!,
+                      width: 400,
+                      height: 200,
+                      fit: BoxFit.fill,
                     ),
                     Positioned(
                         top: -3,
