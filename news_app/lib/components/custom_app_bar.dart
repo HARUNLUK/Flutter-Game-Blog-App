@@ -16,7 +16,7 @@ class CustomAppBar extends AppBar {
             ),
             Text(
               "LUK",
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: Colors.orange),
             ),
           ]),
           Positioned(
