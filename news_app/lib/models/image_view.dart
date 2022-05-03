@@ -3,12 +3,11 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:news_app/components/custom_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ImageView extends StatefulWidget {
-
   final String imageUrl;
-
   ImageView({required this.imageUrl});
 
   @override
@@ -17,99 +16,87 @@ class ImageView extends StatefulWidget {
 
 class _ImageViewState extends State<ImageView> {
   var filePath;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Hero(
-            tag: widget.imageUrl,
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Image.network(widget.imageUrl, fit: BoxFit.contain,
-            )),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+      body: _isLoading
+          ? Center(
+              child: Container(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Stack(
               children: <Widget>[
-                GestureDetector(
-                  onTap: (){
-                    _save();
-                  },
-                  child: Stack(children: <Widget>[
-                    Container(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width/2 ,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Color(0xff1C1B1B).withOpacity(0.8),
-                      )
-                    ),
-                    Container(
-                    width: MediaQuery.of(context).size.width/2 ,
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white60, width: 1),
-                      borderRadius: BorderRadius.circular(30),
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0x36FFFFFF),
-                          Color(0x0FFFFFFF)
-                        ]
-                      )
-                    ),
-                    child: Column(children: <Widget>[
-                      Text("Download Image", style: TextStyle(fontSize: 16, color: Colors.white70),),
-                      Text("Image will be saved in galery", style: TextStyle(fontSize: 12, color: Colors.white70),)
-                    ],),
-                  ),
-                  ],),
+                Hero(
+                  tag: widget.imageUrl,
+                  child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: Image.network(
+                        widget.imageUrl,
+                        fit: BoxFit.contain,
+                      )),
                 ),
-                SizedBox(height: 25,),
-                GestureDetector(
-                    onTap: (){
-                      Navigator.pop(context);
-                    },
-                  child: Text("Cancel", style: TextStyle(color: Colors.white, fontSize: 17),
-                )),
-                SizedBox(height: 50,)
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          _save();
+                        },
+                        child: CustomButton(title: "Download",text: "Image will be saved in galery",)
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: CustomButton(title: "Cancel",text: "",)
+                        ),
+                      SizedBox(
+                        height: 50,
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
-          )
-        ],
-      ),
     );
   }
 
-  _save() async{
-    if(Platform.isAndroid){
+  _save() async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (Platform.isAndroid) {
       await _askPermission();
     }
     await _askPermission();
-    var response = await Dio().get(
-      widget.imageUrl,
-      options: Options(responseType: ResponseType.bytes)
-    );
-    final result = await ImageGallerySaver.saveImage(Uint8List.fromList(response.data));
+    var response = await Dio().get(widget.imageUrl,
+        options: Options(responseType: ResponseType.bytes));
+    final result =
+        await ImageGallerySaver.saveImage(Uint8List.fromList(response.data));
     print(result);
-    Navigator.pop(context);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
-  _askPermission() async{
-    if(Platform.isIOS){
-      Map<Permission , PermissionStatus> permissions = await[
-        Permission.photos
-      ].request(); 
-    }else{
-      Map<Permission , PermissionStatus> permissions = await[
-        Permission.storage
-      ].request(); 
+  _askPermission() async {
+    if (Platform.isIOS) {
+      Map<Permission, PermissionStatus> permissions =
+          await [Permission.photos].request();
+    } else {
+      Map<Permission, PermissionStatus> permissions =
+          await [Permission.storage].request();
     }
   }
 }
