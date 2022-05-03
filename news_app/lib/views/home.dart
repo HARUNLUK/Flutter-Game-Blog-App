@@ -1,16 +1,13 @@
-import 'dart:convert';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:news_app/components/myblog_title.dart';
-import 'package:news_app/components/news_title.dart';
-import 'package:news_app/components/category_title.dart';
+import 'package:news_app/components/blog_post_list.dart';
+import 'package:news_app/components/custom_carousel_slider.dart';
 import 'package:news_app/components/custom_app_bar.dart';
 import 'package:news_app/helper/blogs.dart';
+import 'package:news_app/helper/images.dart';
 import 'package:news_app/helper/news.dart';
 import 'package:news_app/models/article_model.dart';
+import 'package:news_app/models/image_model.dart';
 import 'package:news_app/models/myblog_model.dart';
-import 'package:news_app/views/category_news.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -21,6 +18,7 @@ class _HomeState extends State<Home> {
 
   List<ArticleModel> articles = new List<ArticleModel>.empty(growable: true);
   List<MyBlogModel> blogs = new List<MyBlogModel>.empty(growable: true);
+  List<ImageModel> images = new List<ImageModel>.empty(growable: true);
   bool _loading = true;
 
   @override
@@ -30,10 +28,14 @@ class _HomeState extends State<Home> {
   }
 
   getDatas() async {
-    News newsClass = News();
     Blogs blogsClass = Blogs();
     await blogsClass.getBlogs();
     blogs = blogsClass.blogs;
+
+    Images imagesClass = Images();
+    await imagesClass.getImages();
+    images = imagesClass.images;
+
     setState(() {
       _loading = false;
     });
@@ -50,122 +52,21 @@ class _HomeState extends State<Home> {
                 child: CircularProgressIndicator(),
               ),
             )
-          : SingleChildScrollView(
-              child: Container(
-                color: Colors.black87,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: <Widget>[
-                    //Top Button
-                    /*
-                    Container(
-                        padding: EdgeInsets.only(top: 16),
-                        child: Column(
-                          children: [
-                            ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.white),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CategoryNews()));
-                              },
-                              icon: Icon(
-                                Icons.videogame_asset,
-                                color: Colors.black,
-                              ),
-                              label: Text(
-                                "Game News",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            )
-                          ],
-                        )),
-                    */
-                    /*
-                    Container(
-                        
-                        padding: EdgeInsets.only(top: 2),
-                        child: Column(
-                          children: [
-                            ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.white),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CategoryNews()));
-                              },
-                              icon: Icon(
-                                Icons.videogame_asset,
-                                color: Colors.black,
-                              ),
-                              label: Text(
-                                "Game News",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            )
-                          ],
-                        )),
-                    */
-                    /// Categories
-                    /*
-                    Container(
-                      height: 70,
-                      child: ListView.builder(
-                          itemCount: categories.length,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return CategoryTitle(
-                              imageUrl: categories[index].imageUrl,
-                              categoryName: categories[index].categoryName,
-                            );
-                          }),
-                    ),
-                    */
-                    /// Blogs
-                    Container(
-                      padding: EdgeInsets.only(top: 16),
-                      child: ListView.builder(
-                        itemCount: blogs.length,
-                        shrinkWrap: true,
-                        physics: ClampingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return MyBlogTitle(
-                            imageUrl: blogs[index].urlToImage,
-                            title: blogs[index].title,
-                            url: blogs[index].url,
-                          );
-                        },
-                      ),
-                    ),
+          : Container(
+            color: Colors.black87,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: <Widget>[
+                //TopImages
+                CustomCarouselSlider(images:images),
+                /// Blogs
+                Text("Reviews", style: TextStyle(color: Colors.white60, fontSize: 20, fontWeight: FontWeight.w300),),
+                SizedBox(height: 8,),
+                BlogPostList(blogs: blogs,),
 
-                    /// News
-                    /*
-                    Container(
-                      padding: EdgeInsets.only(top: 16),
-                      child: ListView.builder(
-                        itemCount: articles.length,
-                        shrinkWrap: true,
-                        physics: ClampingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return NewsTitle(
-                            imageUrl: articles[index].urlToImage,
-                            title: articles[index].title,
-                            desc: articles[index].description,
-                            url: articles[index].url,
-                          );
-                        },
-                      ),
-                    ),
-                    */
-                  ],
-                ),
-              ),
+              ],
             ),
+          ),
     );
   }
 }

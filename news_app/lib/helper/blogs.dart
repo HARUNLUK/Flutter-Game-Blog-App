@@ -8,10 +8,8 @@ class Blogs{
   Future<void> getBlogs () async{
     
     DatabaseReference _testRef = FirebaseDatabase.instance.reference();
-    DataSnapshot snapshot = await _testRef.get();
-    var jsonData = await json.decode(json.encode(snapshot.value));
-    var blogsData = jsonData["blogs"];
-    
+    DataSnapshot snapshot = await _testRef.child("blogs").get();
+    var blogsData = await json.decode(json.encode(snapshot.value));
 
     blogsData.forEach((obj){
       MyBlogModel blogModel = new MyBlogModel(
