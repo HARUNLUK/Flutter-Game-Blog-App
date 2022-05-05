@@ -32,7 +32,7 @@ class _CategoryNewsState extends State<CategoryNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar().NewsBar(),
+      appBar: CustomAppBar().NewsBar(context),
       body: _loading ? Center(
         child: Container(
           child: CircularProgressIndicator(),

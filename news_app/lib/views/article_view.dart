@@ -19,7 +19,7 @@ class _ArticleViewState extends State<ArticleView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar().NewsBar(),
+      appBar: CustomAppBar().NewsBar(context),
       body: Container(
         color: Colors.black87,
         height: MediaQuery.of(context).size.height,

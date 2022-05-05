@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:news_app/views/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main() async{
+Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
   

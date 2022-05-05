@@ -39,25 +39,30 @@ class CustomAppBar extends AppBar {
     );
   }
 
-  AppBar NewsBar() {
+  AppBar NewsBar(BuildContext context) {
     return AppBar(
       iconTheme: IconThemeData(
         color: Colors.white38, //change your color here
       ),
       backgroundColor: Colors.black87,
       title:
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Text(
-          "HARUN",
-          style: TextStyle(
-            color: Colors.white38,
+          GestureDetector(
+            onTap: ()=>{
+              Navigator.pop(context),
+            },
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                  Text(
+            "HARUN",
+            style: TextStyle(
+              color: Colors.white38,
+            ),
+                  ),
+                  Text(
+            "LUK",
+            style: TextStyle(color: Colors.blue),
+                  )
+                ]),
           ),
-        ),
-        Text(
-          "LUK",
-          style: TextStyle(color: Colors.blue),
-        )
-      ]),
       actions: <Widget>[
         Opacity(
           opacity: 0,
